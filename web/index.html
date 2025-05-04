@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-wallet"></i> Expense Tracker</h1>
+            <div class="user-section">
+                <input type="text" id="username" placeholder="Enter username">
+                <button id="loginBtn">Login</button>
+            </div>
+        </header>
+
+        <main>
+            <div class="dashboard">
+                <div class="summary-card">
+                    <h2>Monthly Summary</h2>
+                    <div class="summary-content">
+                        <div class="summary-item">
+                            <span>Total Spent</span>
+                            <span id="totalSpent">$0.00</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Monthly Budget</span>
+                            <span id="monthlyBudget">$0.00</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Remaining</span>
+                            <span id="remainingBudget">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="expense-form">
+                    <h2>Add New Expense</h2>
+                    <form id="expenseForm">
+                        <div class="form-group">
+                            <label for="date">Date</label>
+                            <input type="date" id="date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="category">Category</label>
+                            <input type="text" id="category" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="amount">Amount</label>
+                            <input type="number" id="amount" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <input type="text" id="description">
+                        </div>
+                        <button type="submit">Add Expense</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="expenses-section">
+                <h2>Recent Expenses</h2>
+                <div class="filters">
+                    <select id="filterCategory">
+                        <option value="">All Categories</option>
+                    </select>
+                    <select id="filterMonth">
+                        <option value="">All Months</option>
+                    </select>
+                </div>
+                <div class="expenses-list" id="expensesList">
+                    <!-- Expenses will be added here dynamically -->
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
