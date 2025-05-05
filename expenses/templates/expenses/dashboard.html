@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Expense Tracker{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-end mb-3">
+    <form method="post" action="{% url 'reset_month' %}" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to reset all expenses for this month?');">
+            <i class="bi bi-arrow-counterclockwise"></i> Reset This Month
+        </button>
+    </form>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-wallet2"></i> Monthly Budget
+                </h5>
+                <h2 class="card-text">₹{{ monthly_budget }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-cash-stack"></i> Total Spent
+                </h5>
+                <h2 class="card-text">₹{{ total_spent }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-piggy-bank"></i> Remaining
+                </h5>
+                <h2 class="card-text">₹{{ remaining_budget }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Monthly Budget Edit Form -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <form method="post" action="{% url 'update_profile' %}" class="d-flex align-items-end">
+            {% csrf_token %}
+            <div class="me-2">
+                {{ profile_form.monthly_budget.label_tag }}
+                {{ profile_form.monthly_budget }}
+            </div>
+            <button type="submit" class="btn btn-primary">Update Budget</button>
+        </form>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Budget Progress</h5>
+                <div class="progress budget-progress">
+                    <div class="progress-bar {% if budget_percentage > 100 %}bg-danger{% elif budget_percentage > 80 %}bg-warning{% else %}bg-success{% endif %}"
+                         role="progressbar"
+                         style="width: {{ budget_percentage }}%"
+                         aria-valuenow="{{ budget_percentage }}"
+                         aria-valuemin="0"
+                         aria-valuemax="100">
+                        {{ budget_percentage }}%
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="card-title mb-0">Recent Expenses</h5>
+                    <a href="{% url 'add_expense' %}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-plus"></i> Add Expense
+                    </a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Category</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for expense in expenses %}
+                            <tr>
+                                <td>{{ expense.date }}</td>
+                                <td>{{ expense.category }}</td>
+                                <td>{{ expense.description }}</td>
+                                <td>₹{{ expense.amount }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center">No expenses recorded yet.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Expense Categories</h5>
+                <canvas id="categoryChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('categoryChart').getContext('2d');
+    const data = {
+        labels: {{ category_labels|safe }},
+        datasets: [{
+            data: {{ category_data|safe }},
+            backgroundColor: [
+                '#FF6384',
+                '#36A2EB',
+                '#FFCE56',
+                '#4BC0C0',
+                '#9966FF',
+                '#FF9F40'
+            ]
+        }]
+    };
+    new Chart(ctx, {
+        type: 'pie',
+        data: data,
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %} 

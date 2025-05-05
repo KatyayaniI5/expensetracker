@@ -59,6 +59,13 @@
                         <button type="submit">Add Expense</button>
                     </form>
                 </div>
+
+                <form method="post" action="{% url 'update_profile' %}">
+                    {% csrf_token %}
+                    {{ profile_form.monthly_budget.label_tag }}
+                    {{ profile_form.monthly_budget }}
+                    <button type="submit" class="btn btn-primary btn-sm">Update Budget</button>
+                </form>
             </div>
 
             <div class="expenses-section">
